@@ -17,12 +17,22 @@ export default function Navbar() {
     }
   };
 
-  // Dynamic Scroll Handler to adjust padding on scroll
+  // Scroll Handler with Hysteresis to completely eliminate jitter loops
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 80) {
+        // Only collapse header after scrolling down past 80px
+        setIsScrolled(true);
+      } else if (currentScrollY < 15) {
+        // Only expand header when returning almost to the very top (under 15px)
+        setIsScrolled(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+
+    // Use passive listener option for improved scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
