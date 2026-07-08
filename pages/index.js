@@ -13,11 +13,12 @@ export default function Portfolio() {
   // Gallery modal states
   const [activeGallery, setActiveGallery] = useState(null); // 'landgraf' | 'ecobelle' | null
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false); // Zoom pane tracking state
 
   useEffect(() => {
     setMounted(true);
     
-    // Dynamically retrieve asset lists from filesystem scanning API
+    // Retrieves asset list from filesystem scanning API
     const fetchFolderImages = async () => {
       try {
         const resLandgraf = await fetch('/api/images?folder=landgraf');
@@ -56,10 +57,12 @@ export default function Portfolio() {
   const openGallery = (folder) => {
     setActiveGallery(folder);
     setCurrentImageIndex(0);
+    setIsZoomed(false);
   };
 
   const closeGallery = () => {
     setActiveGallery(null);
+    setIsZoomed(false);
   };
 
   const getActiveImages = () => {
@@ -71,12 +74,14 @@ export default function Portfolio() {
   const nextImage = () => {
     const images = getActiveImages();
     if (images.length === 0) return;
+    setIsZoomed(false); // Reset magnification when transitioning
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevImage = () => {
     const images = getActiveImages();
     if (images.length === 0) return;
+    setIsZoomed(false); // Reset magnification when transitioning
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
@@ -509,18 +514,25 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* ==================== SCREENSHOT GALLERY OVERLAY MODAL ==================== */}
+        {/* ==================== PORTRAIT-SAFE EXPANDABLE SCREENSHOT GALLERY MODAL ==================== */}
         {activeGallery && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-opacity">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md transition-opacity">
             <div className="absolute inset-0 cursor-pointer" onClick={closeGallery} />
             
-            <div className="relative w-full max-w-5xl px-6 flex flex-col items-center">
-              {/* Top Bar inside modal */}
-              <div className="w-full flex justify-between items-center mb-4 z-10">
-                <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
-                  {activeGallery === 'landgraf' ? 'Landgraf Booking App' : 'Ecobelle CMS App'} Gallery 
-                  {getActiveImages().length > 0 && ` (${currentImageIndex + 1} / ${getActiveImages().length})`}
-                </span>
+            <div className="relative w-full max-w-4xl px-4 flex flex-col items-center h-[90vh] justify-between z-10">
+              
+              {/* Modal Metadata Top Bar */}
+              <div className="w-full flex justify-between items-center mb-3">
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold uppercase tracking-widest text-violet-400 leading-none mb-1">
+                    {activeGallery === 'landgraf' ? 'Landgraf Booking App' : 'Ecobelle CMS App'} Preview
+                  </span>
+                  {getActiveImages().length > 0 && (
+                    <span className="text-[10px] text-slate-500 font-bold">
+                      Image {currentImageIndex + 1} of {getActiveImages().length} • Click image to zoom & pan
+                    </span>
+                  )}
+                </div>
                 <button 
                   onClick={closeGallery}
                   className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-slate-800 hover:border-slate-700 bg-slate-900 rounded-lg text-slate-300 hover:text-white transition-all cursor-pointer"
@@ -529,52 +541,82 @@ export default function Portfolio() {
                 </button>
               </div>
 
-              {/* Main image view panel */}
-              <div className="relative w-full aspect-video flex items-center justify-center bg-slate-900/40 border border-slate-900 rounded-2xl overflow-hidden p-2">
+              {/* Flex-grow container: Fits both portrait and landscape sizes perfectly without a forced 16:9 ratio */}
+              <div 
+                className={`relative w-full flex-1 flex items-center justify-center bg-slate-950/40 border border-slate-900 rounded-2xl ${
+                  isZoomed ? 'overflow-auto touch-pan-x touch-pan-y' : 'overflow-hidden'
+                }`}
+                style={{ maxHeight: '72vh' }}
+              >
                 {getActiveImages().length > 0 ? (
-                  // Display scanned image
                   <img 
                     src={getActiveImages()[currentImageIndex]} 
-                    alt={`Preview asset ${currentImageIndex}`} 
-                    className="max-h-full max-w-full object-contain rounded-xl select-none"
+                    alt={`Asset index ${currentImageIndex}`} 
+                    onClick={() => setIsZoomed(!isZoomed)}
+                    className={`transition-all duration-300 object-contain select-none ${
+                      isZoomed 
+                        ? 'max-h-none max-w-none w-[180%] cursor-zoom-out py-8' 
+                        : 'max-h-[68vh] max-w-full cursor-zoom-in'
+                    }`}
                   />
                 ) : (
-                  // Helpful Empty State for Developers
+                  // Empty workspace helper state
                   <div className="text-center p-8">
                     <svg className="w-12 h-12 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
-                    <h4 className="text-sm font-bold text-white mb-1">No Screenshots Detected</h4>
+                    <h4 className="text-sm font-bold text-white mb-1">No Assets Detected</h4>
                     <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
-                      Place your image assets inside your project directory at <code className="text-violet-400">/public/{activeGallery}</code> to automatically load them here.
+                      Upload your screens directly into <code className="text-violet-400">/public/{activeGallery}/</code> to automatically populate this interface.
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Prev / Next controls */}
-              {getActiveImages().length > 1 && (
-                <div className="flex justify-center gap-4 mt-6 z-10">
-                  <button 
-                    onClick={prevImage}
-                    className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
-                    aria-label="Previous image"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                  </button>
-                  <button 
-                    onClick={nextImage}
-                    className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
-                    aria-label="Next image"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                  </button>
-                </div>
-              )}
+              {/* Prev / Next controls and Zoom State Indicators */}
+              <div className="w-full flex justify-between items-center mt-4">
+                <button
+                  onClick={() => setIsZoomed(!isZoomed)}
+                  className={`px-4 py-2.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center gap-2 cursor-pointer ${
+                    isZoomed 
+                      ? 'border-violet-500/50 bg-violet-500/10 text-violet-300' 
+                      : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    {isZoomed ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 9V4.5M15 9h4.5M15 9l5.25-5.25M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 15v4.5M15 15h4.5M15 15l5.25 5.25" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.637 10.637zM10.5 7.5v6m3-3h-6" />
+                    )}
+                  </svg>
+                  {isZoomed ? "Zoom: 180% (Pan)" : "Tap Image to Zoom"}
+                </button>
+
+                {getActiveImages().length > 1 && (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={prevImage}
+                      className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
+                      aria-label="Previous image"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={nextImage}
+                      className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
+                      aria-label="Next image"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         )}
