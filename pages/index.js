@@ -70,7 +70,7 @@ export default function Portfolio() {
     {
       title: "The Anxiety Guy - Member Vault",
       subtitle: "Secure Client Program Portal",
-      desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials.",
+      desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials. Based on Node Express",
       tags: ["Membership Backend", "Secure Content Delivery", "WordPress API", "User Authentication"],
       category: "wordpress",
       links: [
