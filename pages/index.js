@@ -9,9 +9,10 @@ export default function Portfolio() {
   // Dynamic image tracking states
   const [landgrafImages, setLandgrafImages] = useState([]);
   const [ecobelleImages, setEcobelleImages] = useState([]);
+  const [anxietyGuyImages, setAnxietyGuyImages] = useState([]);
   
   // Gallery modal states
-  const [activeGallery, setActiveGallery] = useState(null); // 'landgraf' | 'ecobelle' | null
+  const [activeGallery, setActiveGallery] = useState(null); // 'landgraf' | 'ecobelle' | 'anxietyguy' | null
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false); // Zoom pane tracking state
 
@@ -31,6 +32,12 @@ export default function Portfolio() {
         if (resEcobelle.ok) {
           const data = await resEcobelle.json();
           setEcobelleImages(data);
+        }
+
+        const resAnxietyGuy = await fetch('/api/images?folder=anxietyguy');
+        if (resAnxietyGuy.ok) {
+          const data = await resAnxietyGuy.json();
+          setAnxietyGuyImages(data);
         }
       } catch (err) {
         console.error("Failed to fetch folder images dynamically:", err);
@@ -52,7 +59,7 @@ export default function Portfolio() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeGallery, currentImageIndex, landgrafImages, ecobelleImages]);
+  }, [activeGallery, currentImageIndex, landgrafImages, ecobelleImages, anxietyGuyImages]);
 
   const openGallery = (folder) => {
     setActiveGallery(folder);
@@ -68,6 +75,7 @@ export default function Portfolio() {
   const getActiveImages = () => {
     if (activeGallery === 'landgraf') return landgrafImages;
     if (activeGallery === 'ecobelle') return ecobelleImages;
+    if (activeGallery === 'anxietyguy') return anxietyGuyImages;
     return [];
   };
 
@@ -130,6 +138,18 @@ export default function Portfolio() {
         { type: 'playstore', label: "Play Store", url: "https://play.google.com/store/apps/details?id=com.teenovationhub.teenovation&hl=en-US" }
       ],
       featured: true,
+    },
+    {
+      title: "The Anxiety Guy App",
+      subtitle: "Client Vault Mobile Application",
+      desc: "The mobile equivalent of the Member Vault platform. A cross-platform Flutter application allowing clients to access purchased programs offline, stream structured audio guides, and interact with Supabase secure real-time syncing pipelines.",
+      tags: ["Flutter", "Supabase", "Mobile App", "Audio Syncing", "State Architecture"],
+      category: "mobile",
+      links: [
+        { type: 'gallery', label: "View App Screenshots", folder: "anxietyguy" }
+      ],
+      featured: true,
+      status: "In Development"
     },
     {
       title: "Landgraf Lawn Care - Internal Booking System",
@@ -401,12 +421,17 @@ export default function Portfolio() {
                     : 'border-slate-900'
                 }`}
               >
-                {/* Featured Badge */}
-                {project.featured && (
+                {/* Featured Badge or In-Development Status Label */}
+                {project.status ? (
+                  <div className="absolute top-4 right-4 bg-amber-500/10 text-amber-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-amber-500/20 flex items-center gap-1.5 animate-pulse">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                    {project.status}
+                  </div>
+                ) : project.featured ? (
                   <div className="absolute top-4 right-4 bg-violet-500/10 text-violet-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-violet-500/20">
                     Featured Stack
                   </div>
-                )}
+                ) : null}
 
                 <div>
                   {/* Category Badging */}
@@ -475,7 +500,9 @@ export default function Portfolio() {
 
                     // 3. Dynamic Scan Gallery Button
                     if (link.type === 'gallery') {
-                      const imageList = link.folder === 'landgraf' ? landgrafImages : ecobelleImages;
+                      const imageList = 
+                        link.folder === 'landgraf' ? landgrafImages : 
+                        link.folder === 'ecobelle' ? ecobelleImages : anxietyGuyImages;
                       const count = imageList.length;
                       return (
                         <button
@@ -525,7 +552,7 @@ export default function Portfolio() {
               <div className="w-full flex justify-between items-center mb-3">
                 <div className="flex flex-col">
                   <span className="text-xs font-bold uppercase tracking-widest text-violet-400 leading-none mb-1">
-                    {activeGallery === 'landgraf' ? 'Landgraf Booking App' : 'Ecobelle CMS App'} Preview
+                    {activeGallery === 'landgraf' ? 'Landgraf Booking App' : activeGallery === 'ecobelle' ? 'Ecobelle CMS App' : 'The Anxiety Guy App'} Preview
                   </span>
                   {getActiveImages().length > 0 && (
                     <span className="text-[10px] text-slate-500 font-bold">
