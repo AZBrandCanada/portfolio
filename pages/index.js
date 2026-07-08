@@ -68,6 +68,17 @@ export default function Portfolio() {
       featured: true,
     },
     {
+      title: "The Anxiety Guy - Member Vault",
+      subtitle: "Secure Client Program Portal",
+      desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials.",
+      tags: ["Membership Backend", "Secure Content Delivery", "WordPress API", "User Authentication"],
+      category: "wordpress",
+      links: [
+        { type: 'web', label: "Launch Member Vault", url: "https://vault.theanxietyguy.com/" }
+      ],
+      featured: true,
+    },
+    {
       title: "Wades Burgers",
       subtitle: "High-Performance Web Client",
       desc: "A highly performant, conversion-focused landing and menu delivery site utilizing Next.js static generation.",
@@ -75,6 +86,17 @@ export default function Portfolio() {
       category: "nextjs",
       links: [
         { type: 'web', label: "Launch Website", url: "https://www.wadesburgers.ca/" }
+      ],
+      featured: false,
+    },
+    {
+      title: "HandyHeroYYC",
+      subtitle: "On-Demand Service Directory",
+      desc: "A responsive utility portal implementing customized desktop mega-menus, structured client lead pathways, and optimized deployment via Vercel Edge networks.",
+      tags: ["Next.js", "Tailwind CSS", "Interactive Components", "Vercel Edge"],
+      category: "nextjs",
+      links: [
+        { type: 'web', label: "Launch Website", url: "https://handyheroyyc.vercel.app/" }
       ],
       featured: false,
     },
@@ -125,7 +147,7 @@ export default function Portfolio() {
     {
       title: "Nomad Surfers",
       subtitle: "Global Travel & Directory",
-      desc: "An international surf destination directory managing vast visual libraries, dynamic filters, and booking flow infrastructures. Manual Theme builds, manual legacy plugin upgrades, security updgrades, Initial service included malware removal and immediate hacker removal",
+      desc: "An international surf destination directory managing vast visual libraries, dynamic filters, and booking flow infrastructures. Manual Theme builds, manual legacy plugin upgrades, security upgrades. Initial service included malware removal and immediate hacker removal.",
       tags: ["WordPress", "Directory Architecture", "Visual Catalogs", "Global CDN"],
       category: "wordpress",
       links: [
