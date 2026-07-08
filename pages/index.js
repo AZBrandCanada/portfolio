@@ -27,6 +27,7 @@ export default function Portfolio() {
     { id: 'nextjs', label: 'Next.js Apps' },
     { id: 'wordpress', label: 'WordPress Engine' },
     { id: 'mobile', label: 'Mobile Platforms' },
+    { id: 'node_express', label: 'Node Express' },
   ];
 
   // Tech matrix definitions for client review
@@ -71,8 +72,8 @@ export default function Portfolio() {
       title: "The Anxiety Guy - Member Vault",
       subtitle: "Secure Client Program Portal",
       desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials. Based on Node Express",
-      tags: ["Membership Backend", "Secure Content Delivery", "WordPress API", "User Authentication"],
-      category: "wordpress",
+      tags: ["Membership Backend", "Secure Content Delivery", "Node Express", "User Authentication"],
+      category: "Node Express",
       links: [
         { type: 'web', label: "Launch Member Vault", url: "https://vault.theanxietyguy.com/" }
       ],
@@ -184,6 +185,7 @@ export default function Portfolio() {
     if (activeFilter === 'nextjs') return project.category === 'nextjs' || project.title === 'Teenovation';
     if (activeFilter === 'wordpress') return project.category === 'wordpress';
     if (activeFilter === 'mobile') return project.category === 'mobile';
+    if (activeFilter === 'node_express') return project.category === 'Node Express';
     return true;
   });
 
