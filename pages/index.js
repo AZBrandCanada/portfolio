@@ -1,6 +1,172 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 
+// ==================== REUSABLE SYSTEM CARD COMPONENT ====================
+function ProjectCard({ project, imageCounts, onGalleryClick }) {
+  const [showSpecs, setShowSpecs] = useState(false);
+
+  return (
+    <div
+      className={`group relative bg-slate-900/20 border rounded-2xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:border-slate-800 accent-glow-card ${
+        project.featured 
+          ? 'border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-transparent' 
+          : 'border-slate-900'
+      }`}
+    >
+      {/* Featured Badge or In-Development / Alpha Status Label */}
+      {project.status ? (
+        <div className="absolute top-4 right-4 bg-amber-500/10 text-amber-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-amber-500/20 flex items-center gap-1.5 animate-pulse">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+          {project.status}
+        </div>
+      ) : project.featured ? (
+        <div className="absolute top-4 right-4 bg-violet-500/10 text-violet-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-violet-500/20">
+          Featured Stack
+        </div>
+      ) : null}
+
+      <div>
+        {/* Category Badging */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {project.tags.map((tag, tagIdx) => (
+            <span 
+              key={tagIdx} 
+              className="bg-slate-950 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-900"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <span className="text-[10px] font-black tracking-widest text-violet-500 uppercase">
+          {project.subtitle}
+        </span>
+        
+        <h3 className="text-xl font-black text-white tracking-tight mt-1 mb-3 group-hover:text-violet-400 transition-colors">
+          {project.title}
+        </h3>
+        
+        <p className="text-slate-400 text-sm leading-relaxed mb-4">
+          {project.desc}
+        </p>
+
+        {/* ==================== EXPANDABLE TECHNICAL ARCHITECTURE SPEC DRAWER ==================== */}
+        {project.techSpecs && (
+          <div className="mb-4">
+            <button
+              onClick={() => setShowSpecs(!showSpecs)}
+              className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-violet-400 hover:text-violet-300 transition-colors cursor-pointer select-none"
+            >
+              <svg 
+                className={`w-3.5 h-3.5 transition-transform duration-300 ${showSpecs ? 'rotate-90' : ''}`} 
+                fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+              {showSpecs ? "Hide Technical Specs" : "View Architecture Specs"}
+            </button>
+
+            <div 
+              className={`transition-all duration-300 overflow-hidden ${
+                showSpecs ? 'max-h-72 mt-3 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+              }`}
+            >
+              <ul className="bg-slate-950/80 border border-slate-900 rounded-xl p-4 space-y-2.5 font-mono text-[10px] text-slate-300 leading-relaxed max-h-64 overflow-y-auto">
+                {project.techSpecs.map((spec, specIdx) => {
+                  const parts = spec.split(':');
+                  return (
+                    <li key={specIdx} className="flex gap-2">
+                      <span className="text-violet-400 font-bold flex-shrink-0">›</span>
+                      <span>
+                        <strong className="text-slate-100">{parts[0]}:</strong>{parts.slice(1).join(':')}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ==================== ADAPTIVE LINK CONTROLS ==================== */}
+      <div className="flex flex-col gap-2 mt-4">
+        {project.links.map((link, linkIdx) => {
+          // 1. App Store Layout Button
+          if (link.type === 'appstore') {
+            return (
+              <a
+                key={linkIdx}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
+              >
+                <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 170 170">
+                  <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.37.13-9.13-1.9-14.28-6.07-3.47-2.91-7.44-7.73-11.91-14.47-11.52-17.55-17.28-36.42-17.28-56.6 0-15.66 4.03-28.74 12.08-39.22 8.06-10.48 18.04-15.82 29.95-16.03 4.81 0 10.02 1.48 15.61 4.43 5.59 2.96 9.68 4.43 12.28 4.43 2.13 0 6.04-1.39 11.75-4.18 5.7-2.79 10.8-4.1 15.31-3.92 14.54.54 25.7 5.92 33.48 16.14-13.98 8.44-20.8 19.98-20.48 34.61.32 11.39 4.6 20.9 12.83 28.53 8.24 7.62 17.7 11.66 28.38 12.11-2.02 5.86-4.54 11.72-7.55 17.58zm-15.11-105.7c0-11.29 4.14-21.36 12.43-30.22 8.51-9.2 18.52-14.07 30.04-14.59.1 1.25.16 2.2.16 2.85 0 10.63-4.12 20.52-12.38 29.66-8.24 9.14-18.15 14.15-29.74 15.04-.32-1.04-.51-1.74-.51-2.74z" />
+                </svg>
+                {link.label}
+              </a>
+            );
+          }
+          
+          // 2. Play Store Layout Button
+          if (link.type === 'playstore') {
+            return (
+              <a
+                key={linkIdx}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
+              >
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                </svg>
+                {link.label}
+              </a>
+            );
+          }
+
+          // 3. Dynamic Scan Gallery Button
+          if (link.type === 'gallery') {
+            const count = imageCounts[link.folder] || 0;
+            return (
+              <button
+                key={linkIdx}
+                onClick={() => onGalleryClick(link.folder)}
+                className="flex items-center justify-center gap-2.5 w-full bg-violet-600 hover:bg-violet-500 border border-violet-500 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all cursor-pointer"
+              >
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+                {link.label} ({count} {count === 1 ? 'image' : 'images'})
+              </button>
+            );
+          }
+
+          // 4. Default Live Web Experience
+          return (
+            <a
+              key={linkIdx}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white hover:text-violet-400 transition-colors py-1.5 self-start"
+            >
+              {link.label}
+              <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ==================== MAIN PAGE ENTRY POINT ====================
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeMatrixTab, setActiveMatrixTab] = useState('frontend');
@@ -95,6 +261,7 @@ export default function Portfolio() {
 
   const projectCategories = [
     { id: 'all', label: 'All Projects' },
+    { id: 'rust', label: 'Rust Core' },
     { id: 'nextjs', label: 'Next.js Apps' },
     { id: 'wordpress', label: 'WordPress Engine' },
     { id: 'mobile', label: 'Mobile Platforms' },
@@ -138,6 +305,31 @@ export default function Portfolio() {
         { type: 'playstore', label: "Play Store", url: "https://play.google.com/store/apps/details?id=com.teenovationhub.teenovation&hl=en-US" }
       ],
       featured: true,
+      techSpecs: [
+        "Client Engine: Next.js frontend utilizing concurrent pre-rendering and dynamic component hydration on Vercel.",
+        "Mobile App: Cross-platform Dart native compiling via Flutter Engine for iOS and Android.",
+        "Data Model: Secure PostgreSQL schemas coordinated with custom Row-Level Security (RLS) layers on Supabase.",
+        "Transactions: Dual payment gateway integration designed to support robust legacy user accounts during migration."
+      ]
+    },
+    {
+      title: "ForgePress",
+      subtitle: "Custom-Built Site Core Engine",
+      desc: "An open-source custom-built alternative to WordPress. Architected to support lightweight dynamic data rendering, modular content structuring, and custom database schemas. Active repository in development.",
+      tags: ["Rust Systems", "Alternative Engine", "Architecture Core", "Alpha Release"],
+      category: "rust",
+      links: [
+        { type: 'web', label: "ForgePress GitHub", url: "https://github.com/AZBrandCanada/ForgePress" }
+      ],
+      featured: true,
+      status: "Open Source Alpha",
+      techSpecs: [
+        "Server Core: Asynchronous axum v0.7 web runtime powered by tokio background task scheduling.",
+        "Plugin Sandbox: WebAssembly Guest Component execution via wasmtime using WIT interface contracts and WASI Preview 2.",
+        "Inline Scripting: Safe embedded scripting runtime using Rhai bindings to filter event hooks dynamically.",
+        "Data Paradigm: Decoupled flat database access leveraging atomic PostgreSQL JSONB block arrays to eliminate N+1 relational query loops.",
+        "Template Engine: Safe MiniJinja parsing written with Pinned, Boxed async futures to resolve recursive stack layout compilation limits."
+      ]
     },
     {
       title: "The Anxiety Guy App",
@@ -149,7 +341,12 @@ export default function Portfolio() {
         { type: 'gallery', label: "View App Screenshots", folder: "anxietyguy" }
       ],
       featured: true,
-      status: "In Development"
+      status: "In Development",
+      techSpecs: [
+        "Mobile Client: Cross-platform Flutter engine optimized for low-latency media playback and state handling.",
+        "Offline Sync: Local database caching with Supabase remote persistence to keep user recovery milestones synchronized.",
+        "Audio Pipeline: Secure binary token verification to decrypt and stream premium meditation audio guides."
+      ]
     },
     {
       title: "Landgraf Lawn Care - Internal Booking System",
@@ -161,6 +358,11 @@ export default function Portfolio() {
         { type: 'gallery', label: "View System Screenshots", folder: "landgraf" }
       ],
       featured: true,
+      techSpecs: [
+        "Technician app: Cross-platform Flutter binary coordinating live scheduling coordinates and field job completion trees.",
+        "Console Hub: Administrative web console utilizing Next.js for rapid geo-location dispatch maps and employee assignments.",
+        "Systems Pipeline: Supabase Postgres event queues communicating dynamic status updates to administrative consoles."
+      ]
     },
     {
       title: "Ecobelle - Mobile Booking & CMS App",
@@ -172,6 +374,10 @@ export default function Portfolio() {
         { type: 'gallery', label: "View App Screenshots", folder: "ecobelle" }
       ],
       featured: false,
+      techSpecs: [
+        "Client App: Flutter GUI integrating clean step-by-step service customizer widgets.",
+        "Sync Architecture: Instant backend CMS state distribution from Next.js server actions straight to mobile clients."
+      ]
     },
     {
       title: "The Anxiety Guy - Member Vault",
@@ -183,6 +389,11 @@ export default function Portfolio() {
         { type: 'web', label: "Launch Member Vault", url: "https://vault.theanxietyguy.com/" }
       ],
       featured: true,
+      techSpecs: [
+        "App Stack: Node.js Express server utilizing modular dynamic token authentication.",
+        "Access Protection: Dynamic custom integrations tracking product purchases across distinct external eCommerce sites.",
+        "System Delivery: High-bandwidth file encryption safeguarding proprietary therapy video modules and digital PDF worksheets."
+      ]
     },
     {
       title: "Wades Burgers",
@@ -287,6 +498,7 @@ export default function Portfolio() {
 
   const filteredProjects = projects.filter((project) => {
     if (activeFilter === 'all') return true;
+    if (activeFilter === 'rust') return project.category === 'rust';
     if (activeFilter === 'nextjs') return project.category === 'nextjs' || project.title === 'Teenovation';
     if (activeFilter === 'wordpress') return project.category === 'wordpress';
     if (activeFilter === 'mobile') return project.category === 'mobile';
@@ -413,130 +625,16 @@ export default function Portfolio() {
           {/* Cards Display Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mounted && filteredProjects.map((project, idx) => (
-              <div
+              <ProjectCard 
                 key={idx}
-                className={`group relative bg-slate-900/20 border rounded-2xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:border-slate-800 accent-glow-card ${
-                  project.featured 
-                    ? 'border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-transparent' 
-                    : 'border-slate-900'
-                }`}
-              >
-                {/* Featured Badge or In-Development Status Label */}
-                {project.status ? (
-                  <div className="absolute top-4 right-4 bg-amber-500/10 text-amber-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-amber-500/20 flex items-center gap-1.5 animate-pulse">
-                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
-                    {project.status}
-                  </div>
-                ) : project.featured ? (
-                  <div className="absolute top-4 right-4 bg-violet-500/10 text-violet-400 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-violet-500/20">
-                    Featured Stack
-                  </div>
-                ) : null}
-
-                <div>
-                  {/* Category Badging */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {project.tags.map((tag, tagIdx) => (
-                      <span 
-                        key={tagIdx} 
-                        className="bg-slate-950 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-900"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <span className="text-[10px] font-black tracking-widest text-violet-500 uppercase">
-                    {project.subtitle}
-                  </span>
-                  
-                  <h3 className="text-xl font-black text-white tracking-tight mt-1 mb-3 group-hover:text-violet-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                    {project.desc}
-                  </p>
-                </div>
-
-                {/* ==================== ADAPTIVE LINK CONTROLS ==================== */}
-                <div className="flex flex-col gap-2 mt-4">
-                  {project.links.map((link, linkIdx) => {
-                    // 1. App Store Layout Button
-                    if (link.type === 'appstore') {
-                      return (
-                        <a
-                          key={linkIdx}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
-                        >
-                          <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 170 170">
-                            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.37.13-9.13-1.9-14.28-6.07-3.47-2.91-7.44-7.73-11.91-14.47-11.52-17.55-17.28-36.42-17.28-56.6 0-15.66 4.03-28.74 12.08-39.22 8.06-10.48 18.04-15.82 29.95-16.03 4.81 0 10.02 1.48 15.61 4.43 5.59 2.96 9.68 4.43 12.28 4.43 2.13 0 6.04-1.39 11.75-4.18 5.7-2.79 10.8-4.1 15.31-3.92 14.54.54 25.7 5.92 33.48 16.14-13.98 8.44-20.8 19.98-20.48 34.61.32 11.39 4.6 20.9 12.83 28.53 8.24 7.62 17.7 11.66 28.38 12.11-2.02 5.86-4.54 11.72-7.55 17.58zm-15.11-105.7c0-11.29 4.14-21.36 12.43-30.22 8.51-9.2 18.52-14.07 30.04-14.59.1 1.25.16 2.2.16 2.85 0 10.63-4.12 20.52-12.38 29.66-8.24 9.14-18.15 14.15-29.74 15.04-.32-1.04-.51-1.74-.51-2.74z" />
-                          </svg>
-                          {link.label}
-                        </a>
-                      );
-                    }
-                    
-                    // 2. Play Store Layout Button
-                    if (link.type === 'playstore') {
-                      return (
-                        <a
-                          key={linkIdx}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
-                        >
-                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                          </svg>
-                          {link.label}
-                        </a>
-                      );
-                    }
-
-                    // 3. Dynamic Scan Gallery Button
-                    if (link.type === 'gallery') {
-                      const imageList = 
-                        link.folder === 'landgraf' ? landgrafImages : 
-                        link.folder === 'ecobelle' ? ecobelleImages : anxietyGuyImages;
-                      const count = imageList.length;
-                      return (
-                        <button
-                          key={linkIdx}
-                          onClick={() => openGallery(link.folder)}
-                          className="flex items-center justify-center gap-2.5 w-full bg-violet-600 hover:bg-violet-500 border border-violet-500 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all cursor-pointer"
-                        >
-                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                          </svg>
-                          {link.label} ({count} {count === 1 ? 'image' : 'images'})
-                        </button>
-                      );
-                    }
-
-                    // 4. Default Live Web Experience
-                    return (
-                      <a
-                        key={linkIdx}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white hover:text-violet-400 transition-colors py-1.5 self-start"
-                      >
-                        {link.label}
-                        <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                        </svg>
-                      </a>
-                    );
-                  })}
-                </div>
-
-              </div>
+                project={project}
+                imageCounts={{
+                  landgraf: landgrafImages.length,
+                  ecobelle: ecobelleImages.length,
+                  anxietyguy: anxietyGuyImages.length
+                }}
+                onGalleryClick={openGallery}
+              />
             ))}
           </div>
         </section>
