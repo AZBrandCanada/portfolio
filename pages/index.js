@@ -6,20 +6,78 @@ export default function Portfolio() {
   const [activeMatrixTab, setActiveMatrixTab] = useState('frontend');
   const [mounted, setMounted] = useState(false);
 
+  // Dynamic image tracking states
+  const [landgrafImages, setLandgrafImages] = useState([]);
+  const [ecobelleImages, setEcobelleImages] = useState([]);
+  
+  // Gallery modal states
+  const [activeGallery, setActiveGallery] = useState(null); // 'landgraf' | 'ecobelle' | null
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   useEffect(() => {
     setMounted(true);
+    
+    // Dynamically retrieve asset lists from filesystem scanning API
+    const fetchFolderImages = async () => {
+      try {
+        const resLandgraf = await fetch('/api/images?folder=landgraf');
+        if (resLandgraf.ok) {
+          const data = await resLandgraf.json();
+          setLandgrafImages(data);
+        }
+        
+        const resEcobelle = await fetch('/api/images?folder=ecobelle');
+        if (resEcobelle.ok) {
+          const data = await resEcobelle.json();
+          setEcobelleImages(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch folder images dynamically:", err);
+      }
+    };
+
+    fetchFolderImages();
   }, []);
 
-  const handleBackNavigation = (e) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined') {
-      const hasHistory = window.history.length > 1;
-      if (hasHistory && document.referrer) {
-        window.history.back();
-      } else {
-        window.location.href = 'https://azbrand.ca';
-      }
-    }
+  // Keyboard navigation controller for the open gallery modal
+  useEffect(() => {
+    if (!activeGallery) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') closeGallery();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeGallery, currentImageIndex, landgrafImages, ecobelleImages]);
+
+  const openGallery = (folder) => {
+    setActiveGallery(folder);
+    setCurrentImageIndex(0);
+  };
+
+  const closeGallery = () => {
+    setActiveGallery(null);
+  };
+
+  const getActiveImages = () => {
+    if (activeGallery === 'landgraf') return landgrafImages;
+    if (activeGallery === 'ecobelle') return ecobelleImages;
+    return [];
+  };
+
+  const nextImage = () => {
+    const images = getActiveImages();
+    if (images.length === 0) return;
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    const images = getActiveImages();
+    if (images.length === 0) return;
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   const projectCategories = [
@@ -67,6 +125,28 @@ export default function Portfolio() {
         { type: 'playstore', label: "Play Store", url: "https://play.google.com/store/apps/details?id=com.teenovationhub.teenovation&hl=en-US" }
       ],
       featured: true,
+    },
+    {
+      title: "Landgraf Lawn Care - Internal Booking System",
+      subtitle: "Proprietary Dispatch & Booking App",
+      desc: "An internal scheduling and technician dispatch engine coordination tool. Integrates a Flutter mobile application for field staff, a Next.js administrative console, and real-time database state sync via Supabase.",
+      tags: ["Flutter", "Next.js", "Supabase", "Internal Tool", "Real-Time Databases"],
+      category: "mobile",
+      links: [
+        { type: 'gallery', label: "View System Screenshots", folder: "landgraf" }
+      ],
+      featured: true,
+    },
+    {
+      title: "Ecobelle - Mobile Booking & CMS App",
+      subtitle: "Client & Scheduling Interface",
+      desc: "A custom Flutter mobile client providing direct residential service booking, calendar coordination, and dynamic CMS content delivery powered by Next.js and Supabase cloud data storage.",
+      tags: ["Flutter", "Next.js", "Supabase", "CMS Integration", "Client Portals"],
+      category: "mobile",
+      links: [
+        { type: 'gallery', label: "View App Screenshots", folder: "ecobelle" }
+      ],
+      featured: false,
     },
     {
       title: "The Anxiety Guy - Member Vault",
@@ -196,7 +276,6 @@ export default function Portfolio() {
         <meta name="description" content="Technical portfolio showing production deployments of Next.js web applications, Flutter mobile apps, and custom high-traffic WordPress platforms." />
       </Head>
 
-      {/* Decorative Interactive Styling Hooks */}
       <style>{`
         @keyframes subtleGlow {
           0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
@@ -363,7 +442,6 @@ export default function Portfolio() {
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
                         >
-                          {/* Apple Logo Icon */}
                           <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 170 170">
                             <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.37.13-9.13-1.9-14.28-6.07-3.47-2.91-7.44-7.73-11.91-14.47-11.52-17.55-17.28-36.42-17.28-56.6 0-15.66 4.03-28.74 12.08-39.22 8.06-10.48 18.04-15.82 29.95-16.03 4.81 0 10.02 1.48 15.61 4.43 5.59 2.96 9.68 4.43 12.28 4.43 2.13 0 6.04-1.39 11.75-4.18 5.7-2.79 10.8-4.1 15.31-3.92 14.54.54 25.7 5.92 33.48 16.14-13.98 8.44-20.8 19.98-20.48 34.61.32 11.39 4.6 20.9 12.83 28.53 8.24 7.62 17.7 11.66 28.38 12.11-2.02 5.86-4.54 11.72-7.55 17.58zm-15.11-105.7c0-11.29 4.14-21.36 12.43-30.22 8.51-9.2 18.52-14.07 30.04-14.59.1 1.25.16 2.2.16 2.85 0 10.63-4.12 20.52-12.38 29.66-8.24 9.14-18.15 14.15-29.74 15.04-.32-1.04-.51-1.74-.51-2.74z" />
                           </svg>
@@ -382,7 +460,6 @@ export default function Portfolio() {
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2.5 w-full bg-slate-900 border border-slate-800 hover:border-violet-500/30 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all hover:bg-slate-850"
                         >
-                          {/* Google Play Geometric Outline Icon */}
                           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
                           </svg>
@@ -391,7 +468,25 @@ export default function Portfolio() {
                       );
                     }
 
-                    // 3. Default Live Web Experience
+                    // 3. Dynamic Scan Gallery Button
+                    if (link.type === 'gallery') {
+                      const imageList = link.folder === 'landgraf' ? landgrafImages : ecobelleImages;
+                      const count = imageList.length;
+                      return (
+                        <button
+                          key={linkIdx}
+                          onClick={() => openGallery(link.folder)}
+                          className="flex items-center justify-center gap-2.5 w-full bg-violet-600 hover:bg-violet-500 border border-violet-500 text-white font-bold text-xs uppercase py-3 rounded-xl transition-all cursor-pointer"
+                        >
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                          {link.label} ({count} {count === 1 ? 'image' : 'images'})
+                        </button>
+                      );
+                    }
+
+                    // 4. Default Live Web Experience
                     return (
                       <a
                         key={linkIdx}
@@ -413,6 +508,76 @@ export default function Portfolio() {
             ))}
           </div>
         </section>
+
+        {/* ==================== SCREENSHOT GALLERY OVERLAY MODAL ==================== */}
+        {activeGallery && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-opacity">
+            <div className="absolute inset-0 cursor-pointer" onClick={closeGallery} />
+            
+            <div className="relative w-full max-w-5xl px-6 flex flex-col items-center">
+              {/* Top Bar inside modal */}
+              <div className="w-full flex justify-between items-center mb-4 z-10">
+                <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+                  {activeGallery === 'landgraf' ? 'Landgraf Booking App' : 'Ecobelle CMS App'} Gallery 
+                  {getActiveImages().length > 0 && ` (${currentImageIndex + 1} / ${getActiveImages().length})`}
+                </span>
+                <button 
+                  onClick={closeGallery}
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-slate-800 hover:border-slate-700 bg-slate-900 rounded-lg text-slate-300 hover:text-white transition-all cursor-pointer"
+                >
+                  Close (Esc)
+                </button>
+              </div>
+
+              {/* Main image view panel */}
+              <div className="relative w-full aspect-video flex items-center justify-center bg-slate-900/40 border border-slate-900 rounded-2xl overflow-hidden p-2">
+                {getActiveImages().length > 0 ? (
+                  // Display scanned image
+                  <img 
+                    src={getActiveImages()[currentImageIndex]} 
+                    alt={`Preview asset ${currentImageIndex}`} 
+                    className="max-h-full max-w-full object-contain rounded-xl select-none"
+                  />
+                ) : (
+                  // Helpful Empty State for Developers
+                  <div className="text-center p-8">
+                    <svg className="w-12 h-12 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    <h4 className="text-sm font-bold text-white mb-1">No Screenshots Detected</h4>
+                    <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+                      Place your image assets inside your project directory at <code className="text-violet-400">/public/{activeGallery}</code> to automatically load them here.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Prev / Next controls */}
+              {getActiveImages().length > 1 && (
+                <div className="flex justify-center gap-4 mt-6 z-10">
+                  <button 
+                    onClick={prevImage}
+                    className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
+                    aria-label="Previous image"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                  </button>
+                  <button 
+                    onClick={nextImage}
+                    className="p-3 border border-slate-800 hover:border-violet-500/30 bg-slate-900 rounded-xl text-slate-300 hover:text-white transition-all cursor-pointer"
+                    aria-label="Next image"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ==================== FOOTER SECTION ==================== */}
         <footer className="border-t border-slate-900 bg-slate-950/40">
