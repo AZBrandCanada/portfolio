@@ -463,8 +463,8 @@ export default function Portfolio() {
     {
       title: "The Anxiety Guy - Member Vault",
       subtitle: "Secure Client Program Portal",
-      desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials. Based on Node Express",
-      tags: ["Membership Backend", "Secure Content Delivery", "Node Express", "User Authentication"],
+      desc: "A highly secure, specialized program delivery backend built to handle user access permissions, encrypted content streams, and membership recovery data for premium training materials. Based on Node Express. Maintained under an active client retainer contract.",
+      tags: ["Membership Backend", "Secure Content Delivery", "Node Express", "User Authentication", "Retainer Production Client"],
       category: "Node Express",
       links: [
         { type: 'web', label: "Launch Member Vault", url: "https://vault.theanxietyguy.com/" }
@@ -473,14 +473,15 @@ export default function Portfolio() {
       techSpecs: [
         "App Stack: Node.js Express server utilizing modular dynamic token authentication.",
         "Access Protection: Dynamic custom integrations tracking product purchases across distinct external eCommerce sites.",
-        "System Delivery: High-bandwidth file encryption safeguarding proprietary therapy video modules and digital PDF worksheets."
+        "System Delivery: High-bandwidth file encryption safeguarding proprietary therapy video modules and digital PDF worksheets.",
+        "Operational Status: Managed production architecture maintained under an ongoing client retainer."
       ]
     },
     {
       title: "Wades Burgers",
       subtitle: "High-Performance Web Client",
-      desc: "A highly performant, conversion-focused landing and menu delivery site utilizing Next.js static generation.",
-      tags: ["Next.js", "Tailwind CSS", "Static Site Gen", "Optimized SEO"],
+      desc: "A highly performant, conversion-focused landing and menu delivery site utilizing Next.js static generation. Maintained under an active client retainer contract.",
+      tags: ["Next.js", "Tailwind CSS", "Static Site Gen", "Optimized SEO", "Retainer Production Client"],
       category: "nextjs",
       links: [
         { type: 'web', label: "Launch Website", url: "https://www.wadesburgers.ca/" }
@@ -490,8 +491,8 @@ export default function Portfolio() {
     {
       title: "HandyHeroYYC",
       subtitle: "On-Demand Service Directory",
-      desc: "A responsive utility portal implementing customized desktop mega-menus, structured client lead pathways, and optimized deployment via Vercel Edge networks.",
-      tags: ["Next.js", "Tailwind CSS", "Interactive Components", "Vercel Edge"],
+      desc: "A responsive utility portal implementing customized desktop mega-menus, structured client lead pathways, and optimized deployment via Vercel Edge networks. Maintained under an active client retainer contract.",
+      tags: ["Next.js", "Tailwind CSS", "Interactive Components", "Vercel Edge", "Retainer Production Client"],
       category: "nextjs",
       links: [
         { type: 'web', label: "Launch Website", url: "https://handyheroyyc.vercel.app/" }
@@ -501,8 +502,8 @@ export default function Portfolio() {
     {
       title: "Ecobelle Cleaning Services",
       subtitle: "SaaS & Scheduling Layout",
-      desc: "Eco-friendly commercial cleaning landing pages and scheduling layouts crafted for conversions and SEO ranking.",
-      tags: ["Next.js", "UI/UX Design", "Component Library"],
+      desc: "Eco-friendly commercial cleaning landing pages and scheduling layouts crafted for conversions and SEO ranking. Maintained under an active client retainer contract.",
+      tags: ["Next.js", "UI/UX Design", "Component Library", "Retainer Production Client"],
       category: "nextjs",
       links: [
         { type: 'web', label: "Launch Website", url: "https://ecobelle-cleaning-services.com/" }
@@ -512,8 +513,8 @@ export default function Portfolio() {
     {
       title: "Herbs with Robyn",
       subtitle: "Direct-to-Consumer Portal",
-      desc: "Fast, content-forward informational site focused on health consultation intake and optimized page load structures.",
-      tags: ["Next.js", "React Hooks", "Responsive Layout"],
+      desc: "Fast, content-forward informational site focused on health consultation intake and optimized page load structures. Maintained under an active client retainer contract.",
+      tags: ["Next.js", "React Hooks", "Responsive Layout", "Retainer Production Client"],
       category: "nextjs",
       links: [
         { type: 'web', label: "Launch Website", url: "https://herbswithrobyn.com" }
@@ -523,8 +524,8 @@ export default function Portfolio() {
     {
       title: "The Anxiety Guy",
       subtitle: "High-Traffic Content Hub",
-      desc: "A sprawling coaching and media directory integrating massive podcast syndication, blogs, and automated product marketing funnels.",
-      tags: ["WordPress", "Custom Themes", "Podcast Integration", "Marketing Automation"],
+      desc: "A sprawling coaching and media directory integrating podcast syndication, blogs, and automated product marketing. Hosted on a dedicated, full-stack Ubuntu Server with all systems operations and DevOps managed personally. Maintained under an active client retainer contract.",
+      tags: ["WordPress", "Ubuntu Server", "Full-Stack DevOps", "Marketing Automation", "Retainer Production Client"],
       category: "wordpress",
       links: [
         { type: 'web', label: "Launch Website", url: "https://theanxietyguy.com" }
@@ -534,8 +535,8 @@ export default function Portfolio() {
     {
       title: "Dennis Simsek",
       subtitle: "Personal Brand & Media Hub",
-      desc: "A fast, scalable personal branding space designed to handle heavy user traffic, newsletters, and digital product distribution.",
-      tags: ["WordPress", "SEO Optimization", "Lead Funnels", "Performance Auditing"],
+      desc: "A fast, scalable personal branding space designed to handle heavy user traffic, newsletters, and digital product distribution. Configured on an optimized full-stack Ubuntu Server with all systems and DevOps managed personally. Maintained under an active client retainer contract.",
+      tags: ["WordPress", "Ubuntu Server", "Full-Stack DevOps", "Lead Funnels", "Retainer Production Client"],
       category: "wordpress",
       links: [
         { type: 'web', label: "Launch Website", url: "https://dennissimsek.com/" }
@@ -545,8 +546,8 @@ export default function Portfolio() {
     {
       title: "Nomad Surfers",
       subtitle: "Global Travel & Directory",
-      desc: "An international surf destination directory managing vast visual libraries, dynamic filters, and booking flow infrastructures. Manual Theme builds, manual legacy plugin upgrades, security upgrades. Initial service included malware removal and immediate hacker removal.",
-      tags: ["WordPress", "Directory Architecture", "Visual Catalogs", "Global CDN"],
+      desc: "An international surf destination directory managing vast visual libraries, dynamic filters, and booking flow infrastructures. Running on a custom-hardened AlmaLinux 9 virtual server environment with all DevOps, security monitoring, and full-stack configurations managed personally. Maintained under an active client retainer contract.",
+      tags: ["WordPress", "AlmaLinux 9", "Full-Stack DevOps", "Global CDN", "Retainer Production Client"],
       category: "wordpress",
       links: [
         { type: 'web', label: "Launch Website", url: "https://nomadsurfers.com" }
@@ -556,8 +557,8 @@ export default function Portfolio() {
     {
       title: "Landgraf Lawn Care",
       subtitle: "Local Service Platform",
-      desc: "A clean service showcase layout crafted to convert local organic search traffic into active customer leads.",
-      tags: ["WordPress", "Local SEO", "Contact API", "Mobile First"],
+      desc: "A clean service showcase layout crafted to convert local organic search traffic into active customer leads. Configured on an optimized full-stack Ubuntu Server with all server administration and DevOps managed personally. Maintained under an active client retainer contract.",
+      tags: ["WordPress", "Ubuntu Server", "Full-Stack DevOps", "Local SEO", "Retainer Production Client"],
       category: "wordpress",
       links: [
         { type: 'web', label: "Launch Website", url: "https://landgraflawncare.ca" }
@@ -567,8 +568,8 @@ export default function Portfolio() {
     {
       title: "Be Green Lawn Care",
       subtitle: "Eco-Service Portal",
-      desc: "A visually engaging organic service marketing application designed for regional coverage and lead acquisition.",
-      tags: ["WordPress", "Lead Gen", "Geo-Targeted Content", "Asset Compression"],
+      desc: "A visually engaging organic service marketing application designed for regional coverage and lead acquisition. Configured on an optimized full-stack Ubuntu Server with all systems administration and DevOps managed personally. Maintained under an active client retainer contract.",
+      tags: ["WordPress", "Ubuntu Server", "Full-Stack DevOps", "Asset Compression", "Retainer Production Client"],
       category: "wordpress",
       links: [
         { type: 'web', label: "Launch Website", url: "https://begreenlawncare.ca" }
@@ -869,14 +870,14 @@ export default function Portfolio() {
                   <div className="flex gap-2 font-mono">
                     <button 
                       onClick={prevImage}
-                      className="px-4 py-2 border border-zinc-800 hover:border-cyan-400 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer text-xs"
+                      className="px-4 py-2 border border-zinc-850 hover:border-cyan-400 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer text-xs"
                       aria-label="Previous image"
                     >
                       &lt; PREVIOUS
                     </button>
                     <button 
                       onClick={nextImage}
-                      className="px-4 py-2 border border-zinc-800 hover:border-cyan-400 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer text-xs"
+                      className="px-4 py-2 border border-zinc-850 hover:border-cyan-400 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer text-xs"
                       aria-label="Next image"
                     >
                       NEXT &gt;
