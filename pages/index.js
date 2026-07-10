@@ -6,7 +6,7 @@ function ProjectCard({ project, imageCounts, onGalleryClick }) {
   const [showSpecs, setShowSpecs] = useState(false);
   const cardRef = useRef(null);
   
-  // State variables tracking real-time mouse coordinate vectors for 3D physics [2]
+  // State variables tracking real-time mouse coordinate vectors for 3D physics
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [reflection, setReflection] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
@@ -373,8 +373,8 @@ export default function Portfolio() {
     {
       title: "Teenovation",
       subtitle: "Enterprise Startup System",
-      desc: "A scalable platform comprising a Next.js web ecosystem, native iOS & Android applications written in Flutter, and a unified Supabase cloud database backend. Customer Migration and legacy support with dual payment systems.",
-      tags: ["Next.js", "Flutter", "Supabase", "iOS & Android", "PostgreSQL"],
+      desc: "A scalable ecosystem integrating a Next.js web application, native iOS & Android clients built in Flutter, and a unified Supabase cloud database backend. Transactions are routed via custom Next.js APIs on Cloudflare Pages supporting custom payment setups. Includes a secure legacy Wix API dual-payment integration to facilitate continuous user migration. Maintained under an active client retainer contract.",
+      tags: ["Next.js", "Flutter", "Supabase", "Cloudflare Pages", "PostgreSQL", "Retainer Production Client"],
       category: "mobile",
       links: [
         { type: 'web', label: "Launch Web", url: "https://teenovation.net" },
@@ -385,8 +385,8 @@ export default function Portfolio() {
       techSpecs: [
         "Client Engine: Next.js frontend utilizing concurrent pre-rendering and dynamic component hydration on Vercel.",
         "Mobile App: Cross-platform Dart native compiling via Flutter Engine for iOS and Android.",
-        "Data Model: Secure PostgreSQL schemas coordinated with custom Row-Level Security (RLS) layers on Supabase.",
-        "Transactions: Dual payment gateway integration designed to support robust legacy user accounts during migration."
+        "Custom APIs: Cloudflare Pages / Workers API runtime hosting secure payment pipelines alongside a legacy Wix API dual-payment database synchronization model.",
+        "Operational Status: Actively managed production system supported under an ongoing maintenance and engineering retainer."
       ]
     },
     {
@@ -411,8 +411,8 @@ export default function Portfolio() {
     {
       title: "The Anxiety Guy App",
       subtitle: "Client Vault Mobile Application",
-      desc: "The mobile equivalent of the Member Vault platform. A cross-platform Flutter application allowing clients to access purchased programs offline, stream structured audio guides, and interact with Supabase secure real-time syncing pipelines.",
-      tags: ["Flutter", "Supabase", "Mobile App", "Audio Syncing", "State Architecture"],
+      desc: "The mobile equivalent of the Member Vault platform. A cross-platform Flutter application providing secure offline guide streaming and data sync using Supabase. Utilizes custom APIs powered by Next.js and Cloudflare Pages/Workers APIs for specialized app transactions and custom payment structures. Maintained under an active client retainer contract.",
+      tags: ["Flutter", "Supabase", "Mobile App", "Cloudflare Workers", "Custom APIs", "Retainer Production Client"],
       category: "mobile",
       links: [
         { type: 'gallery', label: "View App Screenshots", folder: "anxietyguy" }
@@ -421,15 +421,16 @@ export default function Portfolio() {
       status: "In Development",
       techSpecs: [
         "Mobile Client: Cross-platform Flutter engine optimized for low-latency media playback and state handling.",
+        "Payment Architecture: Custom transactional backend constructed using Next.js route handlers and serverless Cloudflare Workers APIs.",
         "Offline Sync: Local database caching with Supabase remote persistence to keep user recovery milestones synchronized.",
-        "Audio Pipeline: Secure binary token verification to decrypt and stream premium meditation audio guides."
+        "Operational Status: Active product deployment maintained under an ongoing engineering retainer."
       ]
     },
     {
       title: "Landgraf Lawn Care - Internal Booking System",
       subtitle: "Proprietary Dispatch & Booking App",
-      desc: "An internal scheduling and technician dispatch engine coordination tool. Integrates a Flutter mobile application for field staff, a Next.js administrative console, and real-time database state sync via Supabase.",
-      tags: ["Flutter", "Next.js", "Supabase", "Internal Tool", "Real-Time Databases"],
+      desc: "An internal scheduling and technician dispatch engine coordination tool linking a Flutter technician client, a Next.js administrative console, and a Supabase real-time sync system. Secure field transactions are powered by custom Next.js APIs running on Cloudflare Pages for instant deposit capturing. Maintained under an active client retainer contract.",
+      tags: ["Flutter", "Next.js", "Supabase", "Cloudflare Pages", "Internal Tool", "Retainer Production Client"],
       category: "mobile",
       links: [
         { type: 'gallery', label: "View System Screenshots", folder: "landgraf" }
@@ -437,15 +438,16 @@ export default function Portfolio() {
       featured: true,
       techSpecs: [
         "Technician app: Cross-platform Flutter binary coordinating live scheduling coordinates and field job completion trees.",
+        "Transaction Pipelines: Dedicated payment handlers deploying Cloudflare Pages/Workers APIs and Next.js server routines.",
         "Console Hub: Administrative web console utilizing Next.js for rapid geo-location dispatch maps and employee assignments.",
-        "Systems Pipeline: Supabase Postgres event queues communicating dynamic status updates to administrative consoles."
+        "Operational Status: Mission-critical enterprise utility managed under a rolling client retainer agreement."
       ]
     },
     {
       title: "Ecobelle - Mobile Booking & CMS App",
       subtitle: "Client & Scheduling Interface",
-      desc: "A custom Flutter mobile client providing direct residential service booking, calendar coordination, and dynamic CMS content delivery powered by Next.js and Supabase cloud data storage.",
-      tags: ["Flutter", "Next.js", "Supabase", "CMS Integration", "Client Portals"],
+      desc: "A custom Flutter mobile client providing direct residential service booking, calendar coordination, and dynamic CMS content delivery. Features custom booking checkout structures operating on Cloudflare Pages and Next.js custom APIs to process scheduling reservations. Maintained under an active client retainer contract.",
+      tags: ["Flutter", "Next.js", "Supabase", "Cloudflare Pages", "Client Portals", "Retainer Production Client"],
       category: "mobile",
       links: [
         { type: 'gallery', label: "View App Screenshots", folder: "ecobelle" }
@@ -453,7 +455,9 @@ export default function Portfolio() {
       featured: false,
       techSpecs: [
         "Client App: Flutter GUI integrating clean step-by-step service customizer widgets.",
-        "Sync Architecture: Instant backend CMS state distribution from Next.js server actions straight to mobile clients."
+        "Sync Architecture: Instant backend CMS state distribution from Next.js server actions straight to mobile clients.",
+        "Deposit Interface: Cloudflare Pages payment APIs communicating structured deposit parameters to Next.js route handlers.",
+        "Operational Status: Active client platform supported under a rolling monthly maintenance retainer."
       ]
     },
     {
@@ -747,7 +751,7 @@ export default function Portfolio() {
         {/* ==================== PORTFOLIO INTERACTIVE WORKSPACE ==================== */}
         <section className="max-w-7xl mx-auto px-6 lg:px-16 pb-28">
           
-          {/* File Explorer Style Category Filtering Bar (Pruned to resolve layout shifting vertical scroll bars) [1] */}
+          {/* File Explorer Style Category Filtering Bar (Pruned to resolve layout shifting vertical scroll bars) */}
           <div className="flex flex-row overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-zinc-850 mb-10 hide-scrollbar w-full">
             {projectCategories.map((cat) => (
               <button
