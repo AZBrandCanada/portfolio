@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "next": "latest",
-    "nodemailer": "^9.0.3",
+    "nodemailer": "^10.6.1",
     "react": "latest",
     "react-dom": "latest"
   },
